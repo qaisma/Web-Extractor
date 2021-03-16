@@ -50,7 +50,7 @@ namespace Web_Extractor.Controllers
                 var val = domObj == null ?
                     string.Empty :
                     domObj.GetClasses().FirstOrDefault(c => c.Contains("ratings_stars_")).Split('_')[2].Trim();
-                extractedObj.Classification = val;
+                extractedObj.Classification = int.Parse(val);
 
                 //ReviewPoints
                 domObj = htmlDoc.DocumentNode.Descendants().FirstOrDefault(o => o.HasClass("rating")
