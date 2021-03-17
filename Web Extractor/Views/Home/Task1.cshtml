@@ -1,0 +1,28 @@
+﻿@{
+    ViewBag.Title = "Task 1";
+}
+
+<div class="jumbotron">
+    <h1>Web extractor</h1>
+    @using (Html.BeginForm("Extract", "Files", FormMethod.Post, new
+    {
+        enctype = "multipart/form-data"
+    }))
+    {
+        <div class="form-horizontal">
+            <h4>Upload File</h4>
+            <hr />
+            <div class="form-group">
+                <div class="col-md-10">
+                    <input type="file" name="theHtmlFile" />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" value="Upload" class="btn btn-default" />
+                </div>
+            </div>
+        </div>
+    }
+</div>

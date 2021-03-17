@@ -1,4 +1,6 @@
 ﻿using HtmlAgilityPack;
+using Newtonsoft.Json;
+using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -6,11 +8,13 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Mvc;
+using Web_Extractor.Utilities;
 
 namespace Web_Extractor.Controllers
 {
     public class FilesController : Controller
     {
+        #region task 1
         [HttpPost]
         public JsonResult Extract(HttpPostedFileBase theHtmlFile)
         {
@@ -25,10 +29,9 @@ namespace Web_Extractor.Controllers
                 //string addressPattern = "<span.*?id=\"hp_address_subtitle\">\s*(.+?)\s*</span>";
                 //string classificationPattern = "<i class=\"b-sprite stars (.*?) star_track\"";
                 //string reviewPointsPattern = "<span.*?id=\"hp_hotel_name\">\s*(.+?)\s*</span>";
-                //string numberOfReviewsPattern = "<span.*?id=\"hp_hotel_name\">\s*(.+?)\s*</span>";
-                //string descriptionPattern = "<span.*?id=\"hp_hotel_name\">\s*(.+?)\s*</span>";
-                //string roomCategoriesPattern = "<span.*?id=\"hp_hotel_name\">\s*(.+?)\s*</span>"; 
-                //string alternativesPattern = "<span.*?id=\"hp_hotel_name\">\s*(.+?)\s*</span>";
+                //...
+                //..
+                //.
 
                 ////Utilities.HtmlTools.StripTags
                 //Regex regex = new Regex(hotelNamePattern);
@@ -92,7 +95,92 @@ namespace Web_Extractor.Controllers
             }
 
             //internal server error
-            return Json(new { IsExtracted = false, StatusCode = 500, ErrorMessage = "No posted file found!" });
+            return Json(new { IsExtracted = false, StatusCode = 500, ErrorMessage = "No posted file found!" }, JsonRequestBehavior.AllowGet);
+        } 
+        #endregion
+
+        #region task2
+        [HttpPost]
+        public JsonResult GenerateExcelReport(HttpPostedFileBase thePostedFile)
+        {
+            if (thePostedFile != null)
+            {
+                BinaryReader binaryReader = new BinaryReader(thePostedFile.InputStream);
+                byte[] binData = binaryReader.ReadBytes(thePostedFile.ContentLength);
+
+                string fileContent = System.Text.Encoding.UTF8.GetString(binData);
+                var data = JsonConvert.DeserializeObject<Models.HotelImport>(fileContent);
+
+                var fileName = "ConvertedFile_" + DateTime.Now.ToString("yyyyMMddHHmm") + ".xls";
+
+                // create an empty spreadsheet
+                using (var excelPackage = new ExcelPackage())
+                {
+                    ExcelWorksheet worksheet = excelPackage.Workbook.Worksheets.Add("Hotels");
+                    int row = 1;
+                    worksheet.SetValue(row, 1, "ARRIVAL_DATE");
+                    worksheet.SetValue(row, 2, "DEPARTURE_DATE");
+                    worksheet.SetValue(row, 3, "PRICE");
+                    worksheet.SetValue(row, 4, "CURRENCY");
+                    worksheet.SetValue(row, 5, "RATENAME");
+                    worksheet.SetValue(row, 6, "ADULTS");
+                    worksheet.SetValue(row, 7, "BREAKFAST_INCLUDED");
+
+                    foreach (var hotelRate in data.hotelRates)
+                    {
+                        row++;
+                        worksheet.SetValue(row, 1, hotelRate.targetDay.ToShortDateString());
+                        worksheet.SetValue(row, 2, hotelRate.targetDay.AddDays(hotelRate.los).ToShortDateString());
+                        worksheet.SetValue(row, 3, hotelRate.price.numericFloat);
+                        worksheet.SetValue(row, 4, hotelRate.price.currency);
+                        worksheet.SetValue(row, 5, hotelRate.rateName);
+                        worksheet.SetValue(row, 6, hotelRate.adults);
+                        var isBreakfastIncluded = hotelRate.rateTags.Any(t => t.name == "breakfast" && t.shape);
+                        worksheet.SetValue(row, 7, isBreakfastIncluded ? 1 : 0);
+
+                        if (row % 2 != 0)
+                        {
+                            worksheet.Row(row).Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                            worksheet.Row(row).Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.LightGray);
+                        }
+                    }
+                    using (var ms = new MemoryStream())
+                    {
+                        excelPackage.SaveAs(ms);
+                        //ms.Seek(0, SeekOrigin.Begin);
+                        //fileData = ms.ToArray();
+                        //save the file to server temp folder
+                        string fullPath = Path.Combine(Server.MapPath("~/FilesTemp"), fileName);
+                        FileStream file = new FileStream(fullPath, FileMode.Create, FileAccess.Write);
+                        ms.WriteTo(file);
+                        file.Close();
+                    }
+                }
+                return Json(new { FileName = fileName }, JsonRequestBehavior.AllowGet);
+            }
+
+            //internal server error
+            //500 sould be from enum
+            return Json(new { IsExtracted = false, StatusCode = 500, ErrorMessage = "File was not processed!" }, JsonRequestBehavior.AllowGet);
         }
+
+        [DeleteFileAttribute]
+        public ActionResult DownloadExcelReport(string fileName)
+        {
+            if (!string.IsNullOrEmpty(fileName))
+            {
+                //get the temp folder and file path in server
+                string fullPath = Path.Combine(Server.MapPath("~/FilesTemp"), fileName);
+
+                //return the file for download, this is an Excel 
+                //so I set the file content type to "application/vnd.ms-excel"
+                return File(fullPath, "application/vnd.ms-excel", fileName);
+            }
+
+            //internal server error
+            //500 sould be from enum
+            return Json(new { IsExtracted = false, StatusCode = 500, ErrorMessage = "File name was not provided!" }, JsonRequestBehavior.AllowGet);
+        } 
+        #endregion
     }
 }

@@ -13,17 +13,13 @@ namespace Web_Extractor.Controllers
             return View();
         }
 
-        public ActionResult About()
+        public ActionResult Task1()
         {
-            ViewBag.Message = "Your application description page.";
-
             return View();
         }
 
-        public ActionResult Contact()
+        public ActionResult Task2()
         {
-            ViewBag.Message = "Your contact page.";
-
             return View();
         }
     }

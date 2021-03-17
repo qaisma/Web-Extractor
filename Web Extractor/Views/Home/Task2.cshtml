@@ -1,0 +1,62 @@
+﻿
+@{
+    ViewBag.Title = "Task2";
+}
+
+<h2>Task2</h2>
+
+<div class="jumbotron">
+    <h1>Excel Report Generator</h1>
+
+    <div class="form-horizontal">
+        <h4>Upload JSON File</h4>
+        <hr />
+        <div class="form-group">
+            <div class="col-md-6">
+                <input type="file" name="theJsonFile" id="theJsonFile" />
+            </div>
+            <div class="col-md-6">
+                <input type="button" value="Generate Excel Report" class="btn btn-primary" onclick="UploadFile()" />
+            </div>
+        </div>
+    </div>
+</div>
+@Scripts.Render("~/bundles/jquery")
+<script type="text/javascript">
+    $('#theJsonFile').change(function () {
+        //on change event
+        if ($(this).prop('files').length > 0) {
+            file = $(this).prop('files')[0];
+        }
+    });
+
+    function UploadFile() {
+        if ($('#theJsonFile').prop('files').length == 0) {
+            alert('No file selected!');
+            return false;
+        }
+
+        formdata = new FormData();
+        formdata.append("thePostedFile", $('#theJsonFile').prop('files')[0]);
+
+        $.ajax({
+            url: "@Url.Action("GenerateExcelReport","Files")",
+            type: "post",
+            data: formdata,
+            processData: false,
+            contentType: false,
+            success: function (response) {
+                if (response.ErrorMessage != undefined) {
+                    alert('Error ' + response.ErrorMessage);
+                } else {
+                    var fileName = response.FileName;
+                    window.location.href = "@Url.RouteUrl(new { Controller = "Files", Action = "DownloadExcelReport" })/?fileName=" + fileName;
+                }
+            },
+            error: function (jqxhr, status, errorMessage) {
+                //handle error
+                alert('Error ' + errorMessage);
+            }
+        });
+    }
+</script>

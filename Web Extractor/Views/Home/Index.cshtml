@@ -4,25 +4,27 @@
 
 <div class="jumbotron">
     <h1>Web extractor</h1>
-    @using (Html.BeginForm("Extract", "Files", FormMethod.Post, new
-    {
-        enctype = "multipart/form-data"
-    }))
-    {
-        <div class="form-horizontal">
-            <h4>Upload File</h4>
-            <hr />
-            <div class="form-group">
-                <div class="col-md-10">
-                    <input type="file" name="theHtmlFile" />
-                </div>
-            </div>
 
-            <div class="form-group">
-                <div class="col-md-offset-2 col-md-10">
-                    <input type="submit" value="Upload" class="btn btn-default" />
-                </div>
-            </div>
-        </div>
-    }
+    <h2>Task 1 <small>Web Extraction</small></h2>
+    <p class="lead">
+        Write a data extractor that reads out content from extraction.booking.html and extracts the below listed
+        information.
+        The attached screen capture (screencapture-www-booking-com.png) explains the colors below:
+
+        <ul>
+            <li>Hotel name (red)</li>
+            <li>Address (red)</li>
+            <li>Classification / stars (red)</li>
+            <li>Review points (pink)</li>
+            <li>Number of reviews (pink)</li>
+            <li>Description (blue)</li>
+            <li>Room categories (green)</li>
+            <li>Alternative hotels (yellow)</li>
+        </ul>
+    </p>
+
+    <blockquote>
+        <p>Task 1 is implemented using html forms, Task 2 using jQuery Ajax.</p>
+        <footer>Note: Frankly, I didn't implement validations, status codes, proper response objects, json serialization namings, exception handling, and blockUI functionality to save time...</footer>
+    </blockquote>
 </div>
