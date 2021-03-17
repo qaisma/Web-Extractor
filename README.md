@@ -1,5 +1,10 @@
 Web extractor
 =============
+Installation:
+---------------------
+
+This project is built using ASP.Net (Traditional .Net framework). Simply, download then open "Web Extractor.sln" and run using IIS or IIS express.
+
 
 Task 1 Web Extraction
 ---------------------
