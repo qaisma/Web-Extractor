@@ -5,6 +5,8 @@ VisualStudioVersion = 16.0.31025.194
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Web Extractor", "Web Extractor\Web Extractor.csproj", "{96F42660-5947-404E-B37D-3A5022EC6B3F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestProject", "TestProject\TestProject.csproj", "{E83CABAC-21DD-409A-B0A6-B71A90795723}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{96F42660-5947-404E-B37D-3A5022EC6B3F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{96F42660-5947-404E-B37D-3A5022EC6B3F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{96F42660-5947-404E-B37D-3A5022EC6B3F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E83CABAC-21DD-409A-B0A6-B71A90795723}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E83CABAC-21DD-409A-B0A6-B71A90795723}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E83CABAC-21DD-409A-B0A6-B71A90795723}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E83CABAC-21DD-409A-B0A6-B71A90795723}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

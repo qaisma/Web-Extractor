@@ -8,19 +8,19 @@ namespace Web_Extractor.Controllers
 {
     public class HomeController : Controller
     {
-        public ActionResult Index()
+        public ViewResult Index()
         {
-            return View();
+            return View("Index");
         }
 
-        public ActionResult Task1()
+        public ViewResult Task1()
         {
-            return View();
+            return View("Task1");
         }
 
-        public ActionResult Task2()
+        public ViewResult Task2()
         {
-            return View();
+            return View("Task2");
         }
     }
 }
